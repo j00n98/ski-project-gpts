@@ -1,0 +1,90 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "YouTube Transcript API",
+    "description": "This API retrieves YouTube video transcripts.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://thegeneralmind.com/cgi-bin/app.cgi/api",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/transcript": {
+      "post": {
+        "operationId": "getTranscript",
+        "summary": "Get YouTube Video Transcript",
+        "description": "Retrieves the transcript for a given YouTube video ID.",
+        "x-openai-isConsequential": false,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "videoId": {
+                    "type": "string",
+                    "description": "The YouTube video ID for which the transcript is requested."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response with the video transcript.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transcript": {
+                      "type": "string",
+                      "description": "The transcript text of the requested video."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - No video ID provided or transcripts are disabled for this video or no transcript found for the given video ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message detailing the reason for the failure."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "General error message for unexpected errors."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
