@@ -1,0 +1,65 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TARS YT summarizer",
+    "description": "Summarize long YT videos",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://youtubetranscript.com"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "getSummarizedTranscript",
+        "summary": "Get summarized transcript of a YouTube video",
+        "parameters": [
+          {
+            "name": "server_vid2",
+            "in": "query",
+            "description": "YouTube video ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/xml": {
+                "example": "<transcript>Summarized transcript goes here...</transcript>"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Invalid video ID"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Video not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Video not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}
