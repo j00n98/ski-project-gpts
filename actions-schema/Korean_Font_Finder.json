@@ -1,0 +1,254 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Font Find API",
+    "description": "API for uploading images to fontfont.app using a JSON formatted request body with Base64 encoded image data.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.fontfont.app",
+      "description": "Font API server"
+    }
+  ],
+  "paths": {
+    "/upload": {
+      "get": {
+        "operationId": "uploadImageByUrl",
+        "summary": "Upload an image to FontFont.app using an external URL",
+        "parameters": [
+          {
+            "name": "image_url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "The URL of the image to be uploaded"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image uploaded and text detected successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "text_boxes": {
+                          "type": "array",
+                          "image_url": {
+                            "type": "string"
+                          },
+                          "width": {
+                            "type": "integer"
+                          },
+                          "height": {
+                            "type": "integer"
+                          },
+                          "s3_path": {
+                            "type": "string"
+                          },
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "x1": {
+                                "type": "integer"
+                              },
+                              "y1": {
+                                "type": "integer"
+                              },
+                              "x2": {
+                                "type": "integer"
+                              },
+                              "y2": {
+                                "type": "integer"
+                              },
+                              "text": {
+                                "type": "string"
+                              },
+                              "text_score": {
+                                "type": "number",
+                                "format": "float"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "err_msg": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, e.g., invalid image format or encoding"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/fontfinder-proxy": {
+      "get": {
+        "operationId": "recognizeFont",
+        "summary": "Recognize fonts in a specified area of an uploaded image",
+        "parameters": [
+          {
+            "name": "s3_path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Path of the image in S3 where the font needs to be recognized"
+          },
+          {
+            "name": "text_box",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON string containing the coordinates and text of the selected area"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Font recognition successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "fonts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "font_id": {
+                                "type": "integer"
+                              },
+                              "font_name": {
+                                "type": "string"
+                              },
+                              "company": {
+                                "type": "string"
+                              },
+                              "font_cdn_md5": {
+                                "type": "string"
+                              },
+                              "prob": {
+                                "type": "number",
+                                "format": "float"
+                              },
+                              "image_url": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "crop_image_url": {
+                          "type": "string"
+                        },
+                        "total_page": {
+                          "type": "number"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "text_box": {
+                          "type": "object",
+                          "properties": {
+                            "x1": {
+                              "type": "integer"
+                            },
+                            "y1": {
+                              "type": "integer"
+                            },
+                            "x2": {
+                              "type": "integer"
+                            },
+                            "y2": {
+                              "type": "integer"
+                            },
+                            "text": {
+                              "type": "string"
+                            },
+                            "text_score": {
+                              "type": "number",
+                              "format": "float"
+                            }
+                          }
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "font_result": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "class_name": {
+                                "type": "integer"
+                              },
+                              "prob": {
+                                "type": "number",
+                                "format": "float"
+                              }
+                            }
+                          }
+                        },
+                        "once_cnt": {
+                          "type": "integer"
+                        },
+                        "text_warning": {
+                          "type": "boolean"
+                        },
+                        "show_search_history": {
+                          "type": "boolean"
+                        },
+                        "search_language": {
+                          "type": "string"
+                        },
+                        "font_search_id": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, e.g., invalid parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}
